@@ -6,9 +6,10 @@ import cv2
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
-MAX_NUM = 5
+MAX_NUM = 1
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
+OUT_PATH = './density/part_A_final/train_data/'
 
 def gaussian_filter_density(gt):
     density = np.zeros(gt.shape, dtype=np.float32)
@@ -23,7 +24,7 @@ def gaussian_filter_density(gt):
     #print('query kdtree...')
     distances, locations = tree.query(pts, k = 4)
 
-    print('generate density...')
+    print('generating density...')
     for i, pt in enumerate(pts):
         pt2d = np.zeros(gt.shape, dtype = np.float32)
         pt2d[pt[1], pt[0]] = 1.
@@ -37,7 +38,7 @@ def gaussian_filter_density(gt):
 
 
 for img_num in range(1, MAX_NUM + 1):
-    print('image num: ', img_num)
+    print('image num: ', img_num, ' / ', MAX_NUM)
     matf = MAT_PATH + 'GT_IMG_' + str(img_num) + '.mat'
     data = sio.loadmat(matf)
     pixels = data['image_info'][0][0][0][0][0]
@@ -54,12 +55,15 @@ for img_num in range(1, MAX_NUM + 1):
     truth = len(pixels)
     den_sum = np.sum(den)
     error_rate = abs(truth - den_sum) / truth
-    print('truth: ', truth)
+    print('ground truth: ', truth)
     print('density sum: ', den_sum)
     print('error rate: ', error_rate)
     print('###########################################')
-
+    
+    np.savetxt(OUT_PATH + 'DEN_' + str(img_num) + '.txt', den)
+    
     ##绘图部分
+    '''
     max = float(np.max(den))
     den = den * 255 / max
 
@@ -78,7 +82,7 @@ for img_num in range(1, MAX_NUM + 1):
     counts, xbins, ybins, image = plt.hist2d(x, y, bins = 100, norm = LogNorm(), cmap = plt.cm.rainbow)
     plt.savefig('density_' + str(img_num) + '.png')
     #plt.show()
-
+    '''
 
 
 
