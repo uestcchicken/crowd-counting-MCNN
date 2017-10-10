@@ -7,7 +7,7 @@ from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
 START_NUM = 11
-MAX_NUM = 15
+MAX_NUM = 20
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 OUT_PATH = './density/part_A_final/train_data/'
