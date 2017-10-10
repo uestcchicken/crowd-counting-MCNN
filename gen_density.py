@@ -6,7 +6,8 @@ import cv2
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
-MAX_NUM = 1
+START_NUM = 11
+MAX_NUM = 20
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 OUT_PATH = './density/part_A_final/train_data/'
@@ -37,7 +38,7 @@ def gaussian_filter_density(gt):
     return density
 
 
-for img_num in range(1, MAX_NUM + 1):
+for img_num in range(START_NUM, MAX_NUM + 1):
     print('image num: ', img_num, ' / ', MAX_NUM)
     matf = MAT_PATH + 'GT_IMG_' + str(img_num) + '.mat'
     data = sio.loadmat(matf)
