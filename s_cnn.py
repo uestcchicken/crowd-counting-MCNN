@@ -6,8 +6,9 @@ import math
 
 LEARNING_RATE = 1e-2
 BATCH_SIZE = 1
-EPOCH = 2
-MAX_NUM = 20
+EPOCH = 10
+START_NUM = 1
+MAX_NUM = 10
 
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 DEN_PATH = './density/part_A_final/train_data/'
@@ -38,7 +39,7 @@ class net:
         return tf.nn.max_pool(x, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
 
     def inf(self, x):
-        print('inf function start.')
+        #print('inf function start.')
         #x = tf.reshape(x, [-1, _h, _w, 1])
         #print('reshape x over.')
         
@@ -88,7 +89,7 @@ class net:
                 den_quarter[i, j] = np.sum(den[i * 4: i * 4 + 4, j * 4: j * 4 + 4])
 
         #print('density shape: ', den.shape)
-        print('density sum: ', np.sum(den))
+        #print('density sum: ', np.sum(den))
         #print('density quarter shape', den_quarter.shape)
         #print('density quarter sum: ', np.sum(den_quarter))
         
@@ -101,7 +102,10 @@ class net:
         for epoch in range(EPOCH):
             print('***************************************************************************')
             print('epoch: ', epoch + 1)
-            for img_num in range(1, MAX_NUM + 1): 
+            
+            epoch_mae = 0
+            
+            for img_num in range(START_NUM, MAX_NUM + 1): 
                 print('*******************start img_num: ', img_num)   
                 x_in, y_ground = self.data_pre(img_num)
                 img = cv2.imread(IMG_PATH + 'IMG_' + str(img_num) + '.jpg', 0)
@@ -139,18 +143,21 @@ class net:
                         pingfang = cha ** 2
                         he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
                         
-                        print('loss: ', l)
+                        #print('loss: ', l)
                         #print('check loss: ', he)
                         #print('act sum: ', act_s)
                         #print('pre sum: ', pre_s)
-                        print('mae: ', m)
+                        #print('mae: ', m)
                         
                         if i != 1 and j != 1:
                             aaa_sum += act_s
                         
                         mae_sum += m
-                print('whole act: ', aaa_sum)
-                print('whole mae: ', mae_sum)
+                #print('whole image act: ', aaa_sum)
+                print('\bwhole image mae: ', mae_sum)
+                epoch_mae += mae_sum
+            epoch_mae /= (MAX_NUM - START_NUM + 1)
+            print('/////////////////////////////////epoch mae: ', epoch_mae)
     
 a = net()
         
