@@ -6,8 +6,8 @@ import math
 
 LEARNING_RATE = 1e-2
 BATCH_SIZE = 1
-EPOCH = 200
-MAX_NUM = 2
+EPOCH = 2
+MAX_NUM = 20
 
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 DEN_PATH = './density/part_A_final/train_data/'
@@ -82,15 +82,13 @@ class net:
         x = np.array(img * 1.0 / 255.0, dtype = 'float32')
         x = np.reshape(x, (1, height, width, 1))
 
-
-        
         den_quarter = np.zeros((math.ceil(den.shape[0] / 4), math.ceil(den.shape[1] / 4)))
         for i in range(den_quarter.shape[0]):
             for j in range(den_quarter.shape[1]):
                 den_quarter[i, j] = np.sum(den[i * 4: i * 4 + 4, j * 4: j * 4 + 4])
 
         #print('density shape: ', den.shape)
-        #print('density sum: ', np.sum(den))
+        print('density sum: ', np.sum(den))
         #print('density quarter shape', den_quarter.shape)
         #print('density quarter sum: ', np.sum(den_quarter))
         
@@ -103,29 +101,56 @@ class net:
         for epoch in range(EPOCH):
             print('***************************************************************************')
             print('epoch: ', epoch + 1)
-            for img_num in range(1, 300): 
-                print('start img_num: ', img_num)   
+            for img_num in range(1, MAX_NUM + 1): 
+                print('*******************start img_num: ', img_num)   
                 x_in, y_ground = self.data_pre(img_num)
                 img = cv2.imread(IMG_PATH + 'IMG_' + str(img_num) + '.jpg', 0)
                 #print('image shape: ', img.shape)
                 height = img.shape[0]
                 width = img.shape[1]
-                    
-                _, l, y_a, y_p, act_s, pre_s, m, y_out = sess.run([self.train_step, self.loss, self.y_act, self.y_pre, \
-                    self.act_sum, self.pre_sum, self.MAE, self.y_pre], \
-                    feed_dict = {self.x: x_in, self.y_act: y_ground})
-                        
-                y_a = np.array(y_a)
-                y_p = np.array(y_p)
-                cha = y_a - y_p
-                pingfang = cha ** 2
-                he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
                 
-                print('loss: ', l)
-                print('check loss: ', he)
-                print('act sum: ', act_s)
-                print('pre sum: ', pre_s)
-                print('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmae: ', m)
+                den_height = y_ground.shape[1]
+                den_width = y_ground.shape[2]
+                
+                
+                aaa_sum = 0   
+                mae_sum = 0 
+                for i in range(3):
+                    for j in range(3):
+                        x_h_len = math.ceil(height / 2)
+                        x_w_len = math.ceil(width / 2)
+                        y_h_len = math.ceil(den_height / 2)
+                        y_w_len = math.ceil(den_width / 2)
+                        
+                        x_cut = x_in[0, math.floor(height / 4 * i): math.floor(height / 4 * i + x_h_len), \
+                            math.floor(width / 4 * j): math.floor(width / 4 * j  + x_w_len), 0]
+                        x_cut = np.reshape(x_cut, (1, x_cut.shape[0], x_cut.shape[1], 1))
+                        y_cut = y_ground[0, math.floor(den_height / 4 * i): math.floor(den_height / 4 * i + y_h_len), \
+                            math.floor(den_width / 4 * j): math.floor(den_width / 4 * j + y_w_len), 0]
+                        y_cut = np.reshape(y_cut, (1, y_cut.shape[0], y_cut.shape[1], 1))
+
+                        _, l, y_a, y_p, act_s, pre_s, m, y_out = sess.run([self.train_step, self.loss, self.y_act, self.y_pre, \
+                            self.act_sum, self.pre_sum, self.MAE, self.y_pre], \
+                            feed_dict = {self.x: x_cut, self.y_act: y_cut})
+                                
+                        y_a = np.array(y_a)
+                        y_p = np.array(y_p)
+                        cha = y_a - y_p
+                        pingfang = cha ** 2
+                        he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
+                        
+                        print('loss: ', l)
+                        #print('check loss: ', he)
+                        #print('act sum: ', act_s)
+                        #print('pre sum: ', pre_s)
+                        print('mae: ', m)
+                        
+                        if i != 1 and j != 1:
+                            aaa_sum += act_s
+                        
+                        mae_sum += m
+                print('whole act: ', aaa_sum)
+                print('whole mae: ', mae_sum)
     
 a = net()
         
