@@ -6,8 +6,8 @@ import cv2
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
-START_NUM = 11
-MAX_NUM = 20
+START_NUM = 16
+MAX_NUM = 300
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 OUT_PATH = './density/part_A_final/train_data/'
@@ -45,11 +45,15 @@ for img_num in range(START_NUM, MAX_NUM + 1):
     pixels = data['image_info'][0][0][0][0][0]
 
     img = cv2.imread(IMG_PATH + 'IMG_' + str(img_num) + '.jpg', 0)
-    print('image shape: ', img.shape)
+    shape = img.shape
+    print('image shape: ', shape)
 
-    res = np.zeros(img.shape)
+    res = np.zeros(shape)
     for p in pixels:
-        res[int(p[1])][int(p[0])] = 1
+        if int(p[1]) >= shape[0] or int(p[0] >= shape[1]):
+            continue
+        else:
+            res[int(p[1])][int(p[0])] = 1
 
     den = np.array(gaussian_filter_density(res))
 

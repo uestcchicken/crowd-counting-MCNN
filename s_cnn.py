@@ -4,9 +4,9 @@ import random
 import cv2
 import math
 
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-2
 BATCH_SIZE = 1
-EPOCH = 2
+EPOCH = 200
 MAX_NUM = 2
 
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
@@ -14,17 +14,33 @@ DEN_PATH = './density/part_A_final/train_data/'
 
 class net:
     def __init__(self):
-        print('init class...')
+
+        self.x = tf.placeholder(tf.float32, [None, None, None, 1])
+        self.y_act = tf.placeholder(tf.float32, [None, None, None, 1])    
+        self.y_pre = self.inf(self.x)
         
+        self.loss = tf.reduce_mean((self.y_act - self.y_pre) ** 2)
         
+        self.act_sum = tf.reduce_sum(self.y_act)
+        self.pre_sum = tf.reduce_sum(self.y_pre)
+        self.MAE = tf.abs(self.act_sum - self.pre_sum)
+            
+        self.train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(self.loss)
+
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            self.train(sess)
+
     def conv2d(self, x, w):
         return tf.nn.conv2d(x, w, strides = [1, 1, 1, 1], padding = 'SAME')
 
     def max_pool_2x2(self, x):
         return tf.nn.max_pool(x, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
 
-    def inf(self, x, h, w):
-        x = tf.reshape(x, [1, h, w, 1])
+    def inf(self, x):
+        print('inf function start.')
+        #x = tf.reshape(x, [-1, _h, _w, 1])
+        #print('reshape x over.')
         
         w_conv1 = tf.get_variable('w_conv1', [5, 5, 1, 24])
         b_conv1 = tf.get_variable('b_conv1', [24])
@@ -50,67 +66,68 @@ class net:
         b_conv5 = tf.get_variable('b_conv5', [1])
         h_conv5 = tf.nn.relu(self.conv2d(h_conv4, w_conv5) + b_conv5)
         
-        y_pre = tf.reshape(h_conv5, [math.ceil(h / 4), math.ceil(w / 4)])
+        
+        y_pre = h_conv5
         
         return y_pre
 
     def data_pre(self, img_num):
-        print('start')
+        #print('data_pre function start.')
         den = np.loadtxt(DEN_PATH + 'DEN_' + str(img_num) + '.txt')
-        print('load')
         img = cv2.imread(IMG_PATH + 'IMG_' + str(img_num) + '.jpg', 0)
+        
         height = img.shape[0]
         width = img.shape[1]
-        sub_height = math.floor(height / 2)
-        sub_width = math.floor(width / 2)
             
         x = np.array(img * 1.0 / 255.0, dtype = 'float32')
-        #x = x.reshape([1, height, width, 1])
-        
-        y_act = den
-        
-        return x, y_act
-        
-        #print('start')
-        #y = inf(x)
-        #print(y)
+        x = np.reshape(x, (1, height, width, 1))
 
-    def train(self):
 
-        x_in, y_ground = self.data_pre(1)
-        img = cv2.imread(IMG_PATH + 'IMG_' + '1' + '.jpg', 0)
-        height = img.shape[0]
-        width = img.shape[1]
         
-        y_ground = np.resize(y_ground, (math.ceil(height / 4), math.ceil(width / 4)))
+        den_quarter = np.zeros((math.ceil(den.shape[0] / 4), math.ceil(den.shape[1] / 4)))
+        for i in range(den_quarter.shape[0]):
+            for j in range(den_quarter.shape[1]):
+                den_quarter[i, j] = np.sum(den[i * 4: i * 4 + 4, j * 4: j * 4 + 4])
+
+        #print('density shape: ', den.shape)
+        #print('density sum: ', np.sum(den))
+        #print('density quarter shape', den_quarter.shape)
+        #print('density quarter sum: ', np.sum(den_quarter))
         
-        x = tf.placeholder(tf.float32, [None, None])
-        y_act = tf.placeholder(tf.float32, [None, None])
-        y_pre = self.inf(x, height, width)
+        den_quarter = np.reshape(den_quarter, (1, den_quarter.shape[0], den_quarter.shape[1], 1))
         
-        loss = tf.reduce_mean((y_act - y_pre) ** 2)
-        train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(loss)
+        return x, den_quarter
         
-        MAE = tf.reduce_mean(np.abs(y_act - y_pre))
-        
-        with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
-            #for i in range(1):
+    def train(self, sess):
                 
+        for epoch in range(EPOCH):
+            print('***************************************************************************')
+            print('epoch: ', epoch + 1)
+            for img_num in range(1, 300): 
+                print('start img_num: ', img_num)   
+                x_in, y_ground = self.data_pre(img_num)
+                img = cv2.imread(IMG_PATH + 'IMG_' + str(img_num) + '.jpg', 0)
+                #print('image shape: ', img.shape)
+                height = img.shape[0]
+                width = img.shape[1]
+                    
+                _, l, y_a, y_p, act_s, pre_s, m, y_out = sess.run([self.train_step, self.loss, self.y_act, self.y_pre, \
+                    self.act_sum, self.pre_sum, self.MAE, self.y_pre], \
+                    feed_dict = {self.x: x_in, self.y_act: y_ground})
+                        
+                y_a = np.array(y_a)
+                y_p = np.array(y_p)
+                cha = y_a - y_p
+                pingfang = cha ** 2
+                he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
                 
-            _, l, m, y_out = sess.run([train_step, loss, MAE, y_pre], \
-                    feed_dict = {x: x_in, y_act: y_ground})
-                
-            #print(i)
-                #print('y_out shape: ', y_out.shape)
-                #print(y_out[0])
-                #print('y_ground shape: ', y_ground.shape)
-                #print(y_ground[0])
-            print('loss: ', l)
-            print('mae: ', m)
+                print('loss: ', l)
+                print('check loss: ', he)
+                print('act sum: ', act_s)
+                print('pre sum: ', pre_s)
+                print('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmae: ', m)
     
 a = net()
-a.train()
         
     
 
