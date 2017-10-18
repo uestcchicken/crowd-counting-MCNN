@@ -4,11 +4,11 @@ import random
 import cv2
 import math
 
-LEARNING_RATE = 1e-2
+LEARNING_RATE = 1e-3
 BATCH_SIZE = 1
-EPOCH = 10
+EPOCH = 2
 START_NUM = 1
-MAX_NUM = 10
+MAX_NUM = 100
 
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 DEN_PATH = './density/part_A_final/train_data/'
@@ -31,6 +31,9 @@ class net:
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             self.train(sess)
+            
+            saver = tf.train.Saver()
+            saver.save(sess, 'model/model.ckpt')
 
     def conv2d(self, x, w):
         return tf.nn.conv2d(x, w, strides = [1, 1, 1, 1], padding = 'SAME')
@@ -39,9 +42,6 @@ class net:
         return tf.nn.max_pool(x, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
 
     def inf(self, x):
-        #print('inf function start.')
-        #x = tf.reshape(x, [-1, _h, _w, 1])
-        #print('reshape x over.')
         
         w_conv1 = tf.get_variable('w_conv1', [5, 5, 1, 24])
         b_conv1 = tf.get_variable('b_conv1', [24])
@@ -89,7 +89,7 @@ class net:
                 den_quarter[i, j] = np.sum(den[i * 4: i * 4 + 4, j * 4: j * 4 + 4])
 
         #print('density shape: ', den.shape)
-        #print('density sum: ', np.sum(den))
+        print('density sum: ', np.sum(den))
         #print('density quarter shape', den_quarter.shape)
         #print('density quarter sum: ', np.sum(den_quarter))
         
@@ -98,6 +98,7 @@ class net:
         return x, den_quarter
         
     def train(self, sess):
+        log = open('log.txt', 'w')
                 
         for epoch in range(EPOCH):
             print('***************************************************************************')
@@ -139,14 +140,14 @@ class net:
                                 
                         y_a = np.array(y_a)
                         y_p = np.array(y_p)
-                        cha = y_a - y_p
-                        pingfang = cha ** 2
-                        he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
+                        #cha = y_a - y_p
+                        #pingfang = cha ** 2
+                        #he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
                         
                         #print('loss: ', l)
                         #print('check loss: ', he)
-                        #print('act sum: ', act_s)
-                        #print('pre sum: ', pre_s)
+                        print('act sum: ', act_s)
+                        print('pre sum: ', pre_s)
                         #print('mae: ', m)
                         
                         if i != 1 and j != 1:
@@ -155,9 +156,17 @@ class net:
                         mae_sum += m
                 #print('whole image act: ', aaa_sum)
                 print('\bwhole image mae: ', mae_sum)
+                s = 'image num: ' + str(img_num) + ', mae: ' + str(mae_sum) + '\n'
+                log.writelines(s)
+                log.close()
+                log = open('log.txt', 'a')
                 epoch_mae += mae_sum
             epoch_mae /= (MAX_NUM - START_NUM + 1)
             print('/////////////////////////////////epoch mae: ', epoch_mae)
+            s = '*******************************************\nepoch num: ' + str(epoch + 1) + ', mae: ' + str(epoch_mae) + '\n'
+            log.writelines(s)
+            log.close()
+            log = open('log.txt', 'a')
     
 a = net()
         

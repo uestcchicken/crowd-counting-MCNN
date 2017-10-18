@@ -1,0 +1,5 @@
+image num: 1, mae: 77525.4702148
+image num: 2, mae: 69452.2607422
+image num: 3, mae: 57854.1850586
+image num: 4, mae: 62446.6293945
+image num: 5, mae: 50857.7661133
