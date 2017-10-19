@@ -3,3 +3,5 @@ density/
 *.png
 *.jpg
 *.mat
+*.npy
+log*

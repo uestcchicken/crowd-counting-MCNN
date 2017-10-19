@@ -4,14 +4,15 @@ import random
 import cv2
 import math
 
-LEARNING_RATE = 3e-4
+LEARNING_RATE = 1e-4
 BATCH_SIZE = 1
-EPOCH = 100
-START_NUM = 1
-MAX_NUM = 100
+EPOCH = 10000
+START_NUM = 7
+MAX_NUM = 7
 
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 DEN_PATH = './density/part_A_final/train_data/'
+LOG_FILE = 'log_m.txt'
 
 class net:
     def __init__(self):
@@ -98,7 +99,7 @@ class net:
         return x, den_quarter
         
     def train(self, sess):
-        log = open('log.txt', 'w')
+        log = open(LOG_FILE, 'w')
                 
         for epoch in range(EPOCH):
             print('***************************************************************************')
@@ -144,7 +145,13 @@ class net:
                         #pingfang = cha ** 2
                         #he = np.sum(pingfang) / (pingfang.shape[0] * pingfang.shape[1])
                         
-                        #print('loss: ', l)
+                        #y_a.dtype = 'float32'
+                        #y_p.dtype = 'float32'
+                        
+                        np.save('a' + str(i) + str(j) + '.npy', y_a)
+                        np.save('p' + str(i) + str(j) + '.npy', y_p)
+                        
+                        print('loss: ', l)
                         #print('check loss: ', he)
                         print('act sum: ', act_s)
                         print('pre: ', pre_s)
@@ -159,14 +166,14 @@ class net:
                 s = 'image num: ' + str(img_num) + ', mae: ' + str(mae_sum) + '\n'
                 log.writelines(s)
                 log.close()
-                log = open('log.txt', 'a')
+                log = open(LOG_FILE, 'a')
                 epoch_mae += mae_sum
             epoch_mae /= (MAX_NUM - START_NUM + 1)
             print('/////////////////////////////////epoch mae: ', epoch_mae)
             s = '*******************************************\nepoch num: ' + str(epoch + 1) + ', mae: ' + str(epoch_mae) + '\n'
             log.writelines(s)
             log.close()
-            log = open('log.txt', 'a')
+            log = open(LOG_FILE, 'a')
     
 a = net()
         
