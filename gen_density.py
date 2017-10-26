@@ -6,7 +6,7 @@ import cv2
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
-START_NUM = 197
+START_NUM = 11
 MAX_NUM = 300
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
@@ -64,9 +64,9 @@ for img_num in range(START_NUM, MAX_NUM + 1):
     print('density sum: ', den_sum)
     print('error rate: ', error_rate)
     print('###########################################')
-    
+
     np.savetxt(OUT_PATH + 'DEN_' + str(img_num) + '.txt', den)
-    
+
     ##绘图部分
     '''
     max = float(np.max(den))
@@ -88,11 +88,3 @@ for img_num in range(START_NUM, MAX_NUM + 1):
     plt.savefig('density_' + str(img_num) + '.png')
     #plt.show()
     '''
-
-
-
-
-
-
-
-
