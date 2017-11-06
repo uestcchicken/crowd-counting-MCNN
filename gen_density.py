@@ -7,7 +7,7 @@ from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
 START_NUM = 1
-MAX_NUM = 10
+MAX_NUM = 5
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 OUT_PATH = './density/part_A_final/train_data/'
@@ -20,21 +20,15 @@ def gaussian_filter_density(gt):
 
     pts = np.array(list(zip(np.nonzero(gt)[1], np.nonzero(gt)[0])))
     leafsize = 2048
-    #print('build kdtree...')
     tree = scipy.spatial.KDTree(pts.copy(), leafsize = leafsize)
-    #print('query kdtree...')
     distances, locations = tree.query(pts, k = 4)
 
     print('generating density...')
     for i, pt in enumerate(pts):
         pt2d = np.zeros(gt.shape, dtype = np.float32)
         pt2d[pt[1], pt[0]] = 1.
-        if gt_count > 1:
-            sigma = (distances[i][1] + distances[i][2] + distances[i][3]) * 0.1
-        else:
-            sigma = np.average(np.array(gt.shape)) / 2. / 2. #case: 1 point
+        sigma = (distances[i][0] + distances[i][1] + distances[i][2] + distances[i][3]) * 0.075
         density += scipy.ndimage.filters.gaussian_filter(pt2d, sigma, mode = 'constant')
-    print('done.')
     return density
 
 
