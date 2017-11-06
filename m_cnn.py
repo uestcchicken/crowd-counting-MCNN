@@ -4,14 +4,16 @@ import random
 import cv2
 import math
 
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-4
 BATCH_SIZE = 1
-EPOCH = 10000
-START_NUM = 7
-MAX_NUM = 7
+EPOCH = 500
+START_NUM = 1
+MAX_NUM = 1
 
-IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
-DEN_PATH = './density/part_A_final/train_data/'
+#IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
+#DEN_PATH = './density/part_A_final/train_data/'
+IMG_PATH = './'
+DEN_PATH = './'
 LOG_FILE = 'log_m.txt'
 
 class net:
@@ -27,7 +29,7 @@ class net:
         self.pre_sum = tf.reduce_sum(self.y_pre)
         self.MAE = tf.abs(self.act_sum - self.pre_sum)
 
-        self.train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(self.loss)
+        self.train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(self.loss)
 
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -81,7 +83,8 @@ class net:
         height = img.shape[0]
         width = img.shape[1]
 
-        x = np.array(img * 1.0 / 255.0, dtype = 'float32')
+        x = np.array(img * 1.0 / 128.0, dtype = 'float32')
+        x = x - 127.5
         x = np.reshape(x, (1, height, width, 1))
 
         den_quarter = np.zeros((math.ceil(den.shape[0] / 4), math.ceil(den.shape[1] / 4)))
@@ -121,8 +124,8 @@ class net:
 
                 aaa_sum = 0
                 mae_sum = 0
-                for i in range(1,2):
-                    for j in range(1,2):
+                for i in range(3):
+                    for j in range(3):
                         x_h_len = math.ceil(height / 2)
                         x_w_len = math.ceil(width / 2)
                         y_h_len = math.ceil(den_height / 2)

@@ -6,8 +6,8 @@ import cv2
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
-START_NUM = 11
-MAX_NUM = 300
+START_NUM = 1
+MAX_NUM = 10
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
 OUT_PATH = './density/part_A_final/train_data/'

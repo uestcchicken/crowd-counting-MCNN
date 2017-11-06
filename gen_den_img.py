@@ -3,8 +3,8 @@ import cv2
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
-for m in range(1,2):
-    for l in range(1,2):
+for m in range(1):
+    for l in range(1):
         den = np.load('a' + str(m) + str(l) + '.npy')
         den = den.reshape((den.shape[1], den.shape[2]))
         print(den.shape)
