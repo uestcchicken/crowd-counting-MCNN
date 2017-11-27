@@ -7,3 +7,4 @@ network/
 *.mat
 *.npy
 log*
+nptxt/

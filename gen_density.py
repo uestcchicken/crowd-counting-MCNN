@@ -7,7 +7,7 @@ from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
 #转换图像范围
-START_NUM = 1
+START_NUM = 288
 MAX_NUM = 300
 MAT_PATH = './shanghaitech/part_A_final/train_data/ground_truth/'
 IMG_PATH = './shanghaitech/part_A_final/train_data/images/'

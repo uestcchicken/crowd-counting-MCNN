@@ -8,12 +8,12 @@ LEARNING_RATE = 1e-4
 BATCH_SIZE = 1
 EPOCH = 500
 START_NUM = 1
-MAX_NUM = 1
+MAX_NUM = 100
 
-#IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
-#DEN_PATH = './density/part_A_final/train_data/'
-IMG_PATH = './'
-DEN_PATH = './'
+IMG_PATH = './shanghaitech/part_A_final/train_data/images/'
+DEN_PATH = './density/part_A_final/train_data/'
+#IMG_PATH = './'
+#DEN_PATH = './'
 LOG_FILE = 'log_m.txt'
 
 class net:
@@ -35,8 +35,8 @@ class net:
             sess.run(tf.global_variables_initializer())
             self.train(sess)
 
-            saver = tf.train.Saver()
-            saver.save(sess, 'model/model.ckpt')
+            #saver = tf.train.Saver()
+            #saver.save(sess, 'model/model.ckpt')
 
     def conv2d(self, x, w):
         return tf.nn.conv2d(x, w, strides = [1, 1, 1, 1], padding = 'SAME')
@@ -151,8 +151,8 @@ class net:
                         #y_a.dtype = 'float32'
                         #y_p.dtype = 'float32'
 
-                        np.save('a' + str(i) + str(j) + '.npy', y_a)
-                        np.save('p' + str(i) + str(j) + '.npy', y_p)
+                        #np.save('a' + str(i) + str(j) + '.npy', y_a)
+                        #np.save('p' + str(i) + str(j) + '.npy', y_p)
 
                         print('loss: ', l)
                         #print('check loss: ', he)
