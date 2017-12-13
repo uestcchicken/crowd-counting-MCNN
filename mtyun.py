@@ -5,9 +5,9 @@ import random
 import math
 import argparse
 
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 1e-3
 BATCH_SIZE = 1
-EPOCH = 500
+EPOCH = 50000
 START_NUM = 1
 MAX_NUM = 300
 
@@ -44,13 +44,13 @@ class net:
         self.y_act = tf.placeholder(tf.float32, [None, None, None, 1])
         self.y_pre = self.inf(self.x)
 
-        self.loss = tf.sqrt(tf.reduce_mean(tf.square(self.y_act - self.y_pre)))
+        self.loss = tf.sqrt(tf.reduce_sum(tf.square(self.y_act - self.y_pre)))
 
         self.act_sum = tf.reduce_sum(self.y_act)
         self.pre_sum = tf.reduce_sum(self.y_pre)
         self.MAE = tf.abs(self.act_sum - self.pre_sum)
 
-        self.train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(self.loss)
+        self.train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(self.loss)
 
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -195,10 +195,10 @@ class net:
             epoch_mae = 0
 
             for img_num in range(START_NUM, MAX_NUM + 1):
-                print('*******************start epoch: ', epoch + 1, ', img_num: ', img_num)
+                #print('*******************start epoch: ', epoch + 1, ', img_num: ', img_num)
                 x_in, y_ground = self.data_pre(img_num)
                 img = loadnp(IMG_PATH + 'IMG_' + str(img_num) + '.txt')
-                print('image shape: ', img.shape)
+                #print('image shape: ', img.shape)
                 height = img.shape[0]
                 width = img.shape[1]
 
@@ -255,10 +255,9 @@ class net:
                 _, l, y_a, y_p, act_s, pre_s, m = sess.run([self.train_step, self.loss, self.y_act, self.y_pre, \
                     self.act_sum, self.pre_sum, self.MAE], \
                     feed_dict = {self.x: x_in, self.y_act: y_ground})
-                print('loss: ', l)
-                print('act sum: ', act_s)
-                print('pre sum: ', pre_s)
-                print('mae: ', m)
+                print('*******************start epoch: ', epoch + 1, ', img_num: ', img_num, \
+                    'loss: ', l, 'act sum: ', act_s, 'pre sum: ', pre_s, 'mae: ', m)
+
                 
                 
                 
