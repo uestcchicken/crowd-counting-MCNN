@@ -8,3 +8,5 @@ network/
 *.npy
 log*
 nptxt/
+stupid/
+data/
