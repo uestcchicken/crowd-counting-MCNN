@@ -1,6 +1,6 @@
 # Single Image Crowd Counting via Multi Column Convolutional Neural Network
 
-very ugly unofficial implementation of CVPR2016 paper  
+**unfinished** very ugly unofficial implementation of CVPR2016 paper  
 *Single Image Crowd Counting via Multi Column Convolutional Neural Network*  
 using **tensorflow**
 
@@ -12,7 +12,7 @@ using **tensorflow**
 ### data setup
 
 All the data setup process follows the pytorch version implementation:   
-[svishwa/crowdcount-mcnn](https://github.com/svishwa/crowdcount-mcnn)
+[svishwa/crowdcount-mcnn](https://github.com/svishwa/crowdcount-mcnn#data-setup)
 
 ### train 
 
@@ -27,10 +27,10 @@ run ```python3 test.py```
 
 ### result
 
-I've only trained for about 1 hour so far on DELL laptop, GTX960m.
+I've only trained the model for about 2 hours so far on DELL laptop, GTX960m, tensorflow-gpu 1.4.1.
 Maybe the result will be better with more trainging hours. I hope.
 
 A_mae: 135 A_mse: 220
-B_mae: B_mse:
+B_mae: 60  B_mse: 80
 
 Waiting to train on GTX1080.
