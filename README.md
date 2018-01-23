@@ -35,7 +35,7 @@ I've only trained the model for about 5 hours so far on DELL laptop, GTX960m, te
 Maybe the result will be better with more trainging hours. I hope.
 
 A_mae: 119 A_mse: 188  
-B_mae: 41  B_mse: 64
+B_mae: 32  B_mse: 55
 
 In the paper it's:  
 
