@@ -1,9 +1,11 @@
 # Single Image Crowd Counting via Multi Column Convolutional Neural Network
 
-**unfinished** **unfinished** **unfinished**
+**unfinished**  
+**unfinished**  
+**unfinished**
 
 very ugly unofficial implementation of CVPR2016 paper  
-*Single Image Crowd Counting via Multi Column Convolutional Neural Network*  
+[Single Image Crowd Counting via Multi Column Convolutional Neural Network](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhang_Single-Image_Crowd_Counting_CVPR_2016_paper.pdf)  
 using **tensorflow**
 
 ### installation
@@ -29,10 +31,10 @@ run ```python3 test.py```
 
 ### result
 
-I've only trained the model for about 2 hours so far on DELL laptop, GTX960m, tensorflow-gpu 1.4.1.  
+I've only trained the model for about 5 hours so far on DELL laptop, GTX960m, tensorflow-gpu 1.4.1.  
 Maybe the result will be better with more trainging hours. I hope.
 
-A_mae: 135 A_mse: 220  
+A_mae: 119 A_mse: 188  
 B_mae: 41  B_mse: 64
 
 In the paper it's:  

@@ -8,7 +8,7 @@ import math
 LEARNING_RATE = 1e-4
 EPOCH = 50000
 
-dataset = 'B'
+dataset = 'A'
 
 train_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_patches_9/train/'
 train_den_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_patches_9/train_den/'

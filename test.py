@@ -7,7 +7,7 @@ import math
 
 LEARNING_RATE = 1e-4
 
-dataset = 'B'
+dataset = 'A'
 
 img_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/images/'
 den_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/ground_truth_csv/'
