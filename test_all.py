@@ -57,13 +57,21 @@ class net:
         model_names = os.listdir(model_path)
         data = data_pre()
         
+        best_mae = 10000
+        best_mse = 10000
+        
         for model_name in model_names:
             path = model_path + model_name
         
             with tf.Session() as sess:
                 saver = tf.train.Saver()
                 saver.restore(sess, path + '/model.ckpt')
-                self.test(sess, model_name, data)
+                mae, mse = self.test(sess, model_name, data)
+                if mae < best_mae:
+                    best_mae = mae
+                if mse < best_mse:
+                    best_mse = mse
+        print('best mae:', best_mae, 'mse:', best_mse)
 
     def conv2d(self, x, w):
         return tf.nn.conv2d(x, w, strides = [1, 1, 1, 1], padding = 'SAME')
@@ -176,7 +184,8 @@ class net:
             
         mae /= len(data)
         mse = math.sqrt(mse / len(data))
-        print('model: ', model_name, 'mae: ', mae, 'mse: ', mse)                    
+        print('model: ', model_name, 'mae: ', mae, 'mse: ', mse)
+        return [mae, mse]
 net()
 
 
