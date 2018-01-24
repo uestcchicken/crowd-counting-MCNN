@@ -18,8 +18,6 @@ den_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/gr
 
 model_path = './model' + dataset + '_all/'
 
-
-
 def data_pre():
     print('loading data from dataset', dataset, '...')
     img_names = os.listdir(img_path)
@@ -60,10 +58,12 @@ class net:
         best_mae = 10000
         best_mse = 10000
         
-        for model_name in model_names:
-            path = model_path + model_name
+        with tf.Session() as sess:
         
-            with tf.Session() as sess:
+            for model_name in model_names:
+                path = model_path + model_name
+        
+            
                 saver = tf.train.Saver()
                 saver.restore(sess, path + '/model.ckpt')
                 mae, mse = self.test(sess, model_name, data)

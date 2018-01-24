@@ -4,6 +4,7 @@ import tensorflow as tf
 import os
 import random
 import math
+import sys
 
 LEARNING_RATE = 1e-5
 EPOCH = 50000

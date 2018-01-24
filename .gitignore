@@ -13,3 +13,4 @@ data/
 temp.py
 modelA_all/
 modelB_all/
+__pycache__/

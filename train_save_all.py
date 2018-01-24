@@ -188,6 +188,8 @@ class net:
         
         best_mae = 10000
         
+        saver = tf.train.Saver()
+        
         for epoch in range(EPOCH):
             #print('***************************************************************************')
             #print('epoch: ', epoch + 1)
@@ -240,7 +242,7 @@ class net:
             if val_mae < best_mae:
                 best_mae = val_mae
                 #print('best mae so far, saving model.')
-            saver = tf.train.Saver()
+            
             if not os.path.exists(out_path + 'model' + str(epoch)):
                 os.mkdir(out_path + 'model' + str(epoch))
             saver.save(sess, out_path + 'model' + str(epoch) + '/model.ckpt')

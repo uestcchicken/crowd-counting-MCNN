@@ -5,6 +5,9 @@ import os
 import random
 import math
 import sys
+from heatmap import heatmap
+
+show_heat_map_num = 5
 
 if len(sys.argv) == 2:
     dataset = sys.argv[1]
@@ -12,6 +15,9 @@ else:
     print('usage: python3 test.py A(or B)')
     exit()
 print('dataset:', dataset)
+
+if not os.path.exists('output'):
+    os.mkdir('output')
 
 img_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/images/'
 den_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/ground_truth_csv/'
@@ -22,19 +28,24 @@ def data_pre():
     img_num = len(img_names)
 
     data = []
-    for i in range(img_num):
-        if i % 100 == 0:
+    for i in range(1, img_num + 1):
+        if i % 50 == 0:
             print(i, '/', img_num)
-        name = img_names[i]
+        name = 'IMG_' + str(i) + '.jpg'
         #print(name + '****************************')
         img = cv2.imread(img_path + name, 0)
         img = np.array(img)
         img = (img - 127.5) / 128
         #print(img.shape)
         den = np.loadtxt(open(den_path + name[:-4] + '.csv'), delimiter = ",")
-        #print(den_quarter.shape)
+        #print(den.shape)
         den_sum = np.sum(den)
         data.append([img, den_sum])
+        
+        if i <= show_heat_map_num:
+            cv2.imwrite('output/act_' + str(i) + '.jpg', den)
+            heatmap(den, i, dataset, 'act')
+            
 
     print('load data finished.')
     return data
@@ -142,12 +153,12 @@ class net:
         
         mae = 0
         mse = 0
-        
-        for i in range(len(data)):
+
+        for i in range(1, len(data) + 1):
             if i % 20 == 0:
                 print(i, '/', len(data))
             
-            d = data[i]
+            d = data[i - 1]
             x_in = d[0]
             y_a = d[1]
             #print(x_in)
@@ -155,13 +166,20 @@ class net:
             
             x_in = np.reshape(d[0], (1, d[0].shape[0], d[0].shape[1], 1))
             y_p_den = sess.run(self.y_pre, feed_dict = {self.x: x_in})
-            '''
-            y_p_den = y_p_den[0]
-            for i in range(len(y_p_den)):
-                for j in range(len(y_p_den[0])):
-                    if y_p_den[i][j][0] < 0:
-                        y_p_den[i][j][0] = 0
-            '''
+
+            if i <= show_heat_map_num:
+                y_p_den_out = y_p_den
+                y_p_den_out = np.reshape(y_p_den_out, (y_p_den_out.shape[1], y_p_den_out.shape[2]))
+                #print(y_p_den_out.shape)
+                
+                #y_p_den_out = cv2.resize(y_p_den_out, None, fx = 4, fy = 4, interpolation = cv2.INTER_NEAREST)
+                #y_p_den_out /= 16
+                
+                
+                cv2.imwrite('output/output_' + str(i) + '.jpg', y_p_den_out)
+                heatmap(y_p_den_out, i, dataset, 'pre')
+                
+                #print(y_a, np.sum(y_p_den))
             y_p = np.sum(y_p_den)
             mae += abs(y_a - y_p)
             mse += (y_a - y_p) * (y_a - y_p)
