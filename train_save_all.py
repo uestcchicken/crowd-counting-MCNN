@@ -4,6 +4,7 @@ import tensorflow as tf
 import os
 import random
 import math
+import sys
 
 LEARNING_RATE = 1e-5
 EPOCH = 50000
@@ -20,6 +21,9 @@ train_den_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_pa
 val_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_patches_9/val/'
 val_den_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_patches_9/val_den/'
 
+out_path = './model' + dataset + '_all/'
+if not os.path.exists(out_path):
+    os.mkdir(out_path)
 
 def data_pre_train():
     print('loading data from dataset ', dataset, '...')
@@ -91,9 +95,9 @@ class net:
         self.train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(self.loss)
 
         with tf.Session() as sess:
-            #sess.run(tf.global_variables_initializer())
-            saver = tf.train.Saver()
-            saver.restore(sess, 'model' + dataset + '/model.ckpt')
+            sess.run(tf.global_variables_initializer())
+            #saver = tf.train.Saver()
+            #saver.restore(sess, 'model' + dataset + '/model.ckpt')
             self.train(sess)
 
     def conv2d(self, x, w):
@@ -235,11 +239,12 @@ class net:
             
             if val_mae < best_mae:
                 best_mae = val_mae
-                print('best mae so far, saving model.')
-                saver = tf.train.Saver()
-                saver.save(sess, 'model' + dataset + '/model.ckpt')
-            else:
-                print('best mae:', best_mae)
+                #print('best mae so far, saving model.')
+            saver = tf.train.Saver()
+            if not os.path.exists(out_path + 'model' + str(epoch)):
+                os.mkdir(out_path + 'model' + str(epoch))
+            saver.save(sess, out_path + 'model' + str(epoch) + '/model.ckpt')
+            print('best mae:', best_mae)
             print('**************************')
                             
 net()

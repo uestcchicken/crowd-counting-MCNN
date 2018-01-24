@@ -20,19 +20,16 @@ All the data setup process follows the pytorch version implementation:
 
 ### train 
 
-Set the variable dataset in train.py to 'A' or 'B'  
-run ```python3 train.py```  
+run ```python3 train.py A(or B)```  
 model is saved to modelA/ or modelB/
 
 ### test 
 
-set the variable dataset in test.py to 'A' or 'B'  
-run ```python3 test.py```
+run ```python3 test.py A(or B)```
 
 ### result
 
-I've only trained the model for about 5 hours so far on DELL laptop, GTX960m, tensorflow-gpu 1.4.1.  
-Maybe the result will be better with more trainging hours. I hope.
+The model here is trained on DELL laptop, GTX960m, tensorflow-gpu 1.4.1.  
 
 A_mae: 119 A_mse: 188  
 B_mae: 32  B_mse: 55
@@ -41,5 +38,3 @@ In the paper it's:
 
 A_mae: 110 A_mse: 173  
 B_mae: 26  B_mse: 41
-
-Waiting to train on GTX1080.

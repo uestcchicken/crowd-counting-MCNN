@@ -16,6 +16,10 @@ print('dataset:', dataset)
 img_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/images/'
 den_path = './data/original/shanghaitech/part_' + dataset + '_final/test_data/ground_truth_csv/'
 
+model_path = './model' + dataset + '_all/'
+
+
+
 def data_pre():
     print('loading data from dataset', dataset, '...')
     img_names = os.listdir(img_path)
@@ -50,10 +54,16 @@ class net:
         self.pre_sum = tf.reduce_sum(self.y_pre)
         self.MAE = tf.abs(self.act_sum - self.pre_sum)
         
-        with tf.Session() as sess:
-            saver = tf.train.Saver()
-            saver.restore(sess, 'model' + dataset + '/model.ckpt')
-            self.test(sess)
+        model_names = os.listdir(model_path)
+        data = data_pre()
+        
+        for model_name in model_names:
+            path = model_path + model_name
+        
+            with tf.Session() as sess:
+                saver = tf.train.Saver()
+                saver.restore(sess, path + '/model.ckpt')
+                self.test(sess, model_name, data)
 
     def conv2d(self, x, w):
         return tf.nn.conv2d(x, w, strides = [1, 1, 1, 1], padding = 'SAME')
@@ -137,15 +147,13 @@ class net:
 
         return y_pre
 
-    def test(self, sess):
-        data = data_pre()
-        
+    def test(self, sess, model_name, data):
         mae = 0
         mse = 0
         
         for i in range(len(data)):
-            if i % 20 == 0:
-                print(i, '/', len(data))
+            #if i % 20 == 0:
+                #print(i, '/', len(data))
             
             d = data[i]
             x_in = d[0]
@@ -168,9 +176,7 @@ class net:
             
         mae /= len(data)
         mse = math.sqrt(mse / len(data))
-        print('mae: ', mae)
-        print('mse: ', mse)
-                            
+        print('model: ', model_name, 'mae: ', mae, 'mse: ', mse)                    
 net()
 
 
