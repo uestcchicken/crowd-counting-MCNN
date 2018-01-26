@@ -170,10 +170,11 @@ class net:
         # merge ###########################################################
         h_conv4_merge = tf.concat([h_conv4_1, h_conv4_2, h_conv4_3], 3)
         
-        w_conv5 = tf.get_variable('w_conv5', [1, 1, 30, 1])
+        w_conv5 = tf.get_variable('w_conv5', [1, 1, 10, 1])
         b_conv5 = tf.get_variable('b_conv5', [1])
         #h_conv5 = tf.nn.relu(self.conv2d(h_conv4_merge, w_conv5) + b_conv5)
-        h_conv5 = self.conv2d(h_conv4_merge, w_conv5) + b_conv5
+        #h_conv5 = self.conv2d(h_conv4_merge, w_conv5) + b_conv5
+        h_conv5 = self.conv2d(h_conv4_2, w_conv5) + b_conv5
         
         y_pre = h_conv5
 
