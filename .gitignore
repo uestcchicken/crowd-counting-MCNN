@@ -2,7 +2,6 @@ shanghaitech/
 density/
 model/
 network/
-*.png
 *.jpg
 *.mat
 *.npy
