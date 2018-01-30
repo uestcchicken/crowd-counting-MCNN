@@ -43,8 +43,8 @@ def data_pre_test():
     
 data = data_pre_test()
 
-model = model_from_json(open('model.json').read())
-model.load_weights('weights.h5')
+model = model_from_json(open('keras_modelB/model.json').read())
+model.load_weights('keras_modelB/weights.h5')
 
 mae = 0
 mse = 0
