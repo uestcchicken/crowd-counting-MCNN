@@ -55,8 +55,8 @@ B_mae: 26  B_mse: 41
 ### heatmap
 
 actual: 1110  
-![](./heat_A_2_act_1110.png)  
+![](samples/heat_A_2_act_1110.png)  
 predicted: 1246  
-![](./heat_A_2_pre_1246.png)
+![](samples/heat_A_2_pre_1246.png)
 
 
