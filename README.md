@@ -55,8 +55,8 @@ B_mae: 26  B_mse: 41
 ### heatmap
 
 actual: 1110  
-![](http://ovsd9nv60.bkt.clouddn.com/e6151da5c3543ba4102f902653f6a51e.png)  
+![](./heat_A_2_act_1110.png)  
 predicted: 1246  
-![](http://ovsd9nv60.bkt.clouddn.com/a690a745678f2755f2a19d455fd53192.png)
+![](./heat_A_2_pre_1246.png)
 
 
