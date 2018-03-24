@@ -5,6 +5,7 @@ import os
 import random
 import math
 import sys
+from heatmap import *
 
 
 class MCNN:
@@ -67,10 +68,10 @@ class MCNN:
             den = np.loadtxt(open(den_path + name[:-4] + '.csv'), delimiter = ",")
             den_sum = np.sum(den)
             data.append([img, den_sum])
-            '''
-            if i <= show_heat_map_num:
-                heatmap(den, i, dataset, 'act')
-            '''    
+
+            #if i <= 2:
+                #heatmap(den, i, dataset, 'act')
+  
         print('load test data from dataset', dataset, 'finished')
         return data
         
@@ -123,7 +124,7 @@ class MCNN:
         b_conv4_2 = tf.get_variable('b_conv4_2', [10])
         h_conv4_2 = tf.nn.relu(self.conv2d(h_conv3_2, w_conv4_2) + b_conv4_2)
         
-        #l net ###########################################################
+        # l net ###########################################################
         w_conv1_3 = tf.get_variable('w_conv1_3', [9, 9, 1, 16])
         b_conv1_3 = tf.get_variable('b_conv1_3', [16])
         h_conv1_3 = tf.nn.relu(self.conv2d(x, w_conv1_3) + b_conv1_3)
@@ -217,7 +218,7 @@ class MCNN:
             saver = tf.train.Saver()
             saver.restore(sess, 'model' + self.dataset + '/model.ckpt')
             data = self.data_pre_test(self.dataset)
-        
+
             mae = 0
             mse = 0
             for i in range(1, len(data) + 1):
@@ -231,6 +232,10 @@ class MCNN:
                 y_p_den = sess.run(self.y_pre, feed_dict = {self.x: x_in})
 
                 y_p = np.sum(y_p_den)
+
+                #if i <= 2:
+                    #y_p_den = np.reshape(y_p_den, (y_p_den.shape[1], y_p_den.shape[2]))	
+                    #heatmap(y_p_den, i, self.dataset, 'pre')
                 mae += abs(y_a - y_p)
                 mse += (y_a - y_p) * (y_a - y_p)
                 

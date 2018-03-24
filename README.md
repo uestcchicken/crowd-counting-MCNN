@@ -31,10 +31,11 @@ model is saved to keras_modelB/
 
 For tensorflow:  
 run ```python3 test.py A(or B)```  
-This will generate actual and predicted heatmap for image 1-5
 
 For keras:  
 run ```python3 keras_test.py B```
+
+(uncomment code containing heatmap in network.py to generate heatmap)
 
 ### result
 
